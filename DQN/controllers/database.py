@@ -49,7 +49,7 @@ class Database:
     query_select_part = " SELECT * FROM "
     query_force_plan_part = " SET default_tablespace = temp_tbs; SET join_collapse_limit = 1; "
     query_optimizer_select_plan = " SET default_tablespace = temp_tbs; SET join_collapse_limit = 8; "
-
+#./manage.py runserver 0.0.0.0:8000
     def __init__(self):
         connection = psycopg2.connect(user="postgres",
                                       password="2494",
