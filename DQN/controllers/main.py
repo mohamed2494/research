@@ -20,6 +20,9 @@ def train(request):
     for i in range(100000):
         start = timeit.default_timer()
         pprint("learning" + str(i))
+        f = open("learning.txt", "a")
+        f.write("learinig"+ str(i))
+        f.close()
         agent.start_learning()
         agent.get_q_table()
         agent.saveModel()
