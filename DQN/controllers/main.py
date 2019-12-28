@@ -27,7 +27,7 @@ def train(request):
         agent.get_q_table()
         agent.saveModel()
         stop = timeit.default_timer()
-        pprint('Time: ', stop - start)
+        pprint('Time: '+str(stop - start))
     response = {}
     response["key"] = "done"
     return HttpResponse(json.dumps(response), content_type="application/json")
