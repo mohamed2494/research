@@ -18,9 +18,14 @@ from matplotlib import pyplot
 
 EPISODES = 5000
 
+
+
+import django_rq
+
+
 class DQNAgent:
     def __init__(self):
-
+        self.q = Queue(connection=Redis())
         self.rewards = [120,10,1]
         self.env = Env()
         self.db = Database()
@@ -160,39 +165,56 @@ class DQNAgent:
         #print(actions)
 
         for i in range(len(actions)):
-            # env.render()
+            self.q.enqueue(self.train_reward,state,actions[i])
+
+            #env.render()
             #action = self.act(state)
 
-            next_action = actions[i]
+            ##next_action = actions[i]
 
-            orders = self.get_query_conditions_order(np.asarray(self.env.state, dtype=np.float32), next_action)
+            ##orders = self.get_query_conditions_order(np.asarray(self.env.state, dtype=np.float32), next_action)
 
             #print("orders")
             #print(orders)
-            next_state, reward,done =self.env.step(next_action, orders)
+            ##next_state, reward,done =self.env.step(next_action, orders)
 
             #print("reward")
             #print(reward)
 
-            state_reshaped = np.reshape(state, [1, self.action_size])
+            ##state_reshaped = np.reshape(state, [1, self.action_size])
             #print(state_reshaped)
 
-            target = self.model.predict(state_reshaped)
+            ##target = self.model.predict(state_reshaped)
 
-            target[0][next_action] = reward
+            ##target[0][next_action] = reward
 
             #print(target)
-            self.model.fit(state_reshaped, target, epochs=1, verbose=0)
+            ##self.model.fit(state_reshaped, target, epochs=1, verbose=0)
             #next_state = np.reshape(next_state, [1, state_size])
-            self.remember(state, next_action, reward, next_state, done)
+            ##self.remember(state, next_action, reward, next_state, done)
             #state = next_state
             #if done:
-            self.update_target_model()
+            ##self.update_target_model()
               #  break
             #if len(self.memory) > batch_size:
              #  self.replay(batch_size)
 
             #self.update_target_model()
+    def train_reward(self,state,action):
+        next_action = action
+
+        orders = self.get_query_conditions_order(np.asarray(self.env.state, dtype=np.float32), next_action)
+
+        next_state, reward, done = self.env.step(next_action, orders)
+
+        state_reshaped = np.reshape(state, [1, self.action_size])
+        # print(state_reshaped)
+        target = self.model.predict(state_reshaped)
+        target[0][next_action] = reward
+        target[0][next_action] = reward
+        self.model.fit(state_reshaped, target, epochs=1, verbose=0)
+        self.remember(state, next_action, reward, next_state, done)
+        self.update_target_model()
     def test_learning(self):
 
         state = [1,1,1]
