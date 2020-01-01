@@ -20,12 +20,12 @@ EPISODES = 5000
 
 
 
-import django_rq
+#import django_rq
 
 
 class DQNAgent:
     def __init__(self):
-        self.q = Queue(connection=Redis())
+ #       self.q = Queue(connection=Redis())
         self.rewards = [120,10,1]
         self.env = Env()
         self.db = Database()
@@ -40,7 +40,7 @@ class DQNAgent:
         self.model = self._build_model()
         self.target_model = self._build_model()
         self.update_target_model()
-        self.loadModel()
+        #self.loadModel()
 
     """Huber loss for Q Learning
     References: https://en.wikipedia.org/wiki/Huber_loss
